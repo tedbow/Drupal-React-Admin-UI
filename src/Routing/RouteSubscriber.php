@@ -40,6 +40,9 @@ class RouteSubscriber extends RouteSubscriberBase {
     foreach ($take_over_routes as $route_name) {
       $route = $collection->get($route_name);
       $route->setDefault('_controller', 'Drupal\drupal_admin_ui\Controller\DefaultController::getAppRoute');
+
+      // Add a json version of each route we take over to return blocks.
+      $collection->add("$route_name.json", $this->createJsonRoute($route));
       $route->setOption('_drupal_admin_ui.route', TRUE);
       if (isset($call_back_routes[$route_name])) {
         // We have callback for this route.
@@ -47,8 +50,6 @@ class RouteSubscriber extends RouteSubscriberBase {
         // @see \Drupal\drupal_admin_ui\Controller\DefaultController::getAppRoute().
         $route->setOption('_drupal_admin_ui.callback', $call_back_routes[$route_name]);
       }
-      // Add a json version of each route we take over to return blocks.
-      $collection->add("$route_name.json", $this->createJsonRoute($route));
     }
 
   }
